@@ -1,0 +1,35 @@
+#!/bin/bash
+# code basically copied from DISTROTUBE
+# see "Solve Problems with Shell Scripting and dmenu" by DistroTube on YouTube
+
+_EDITOR="emacsclient -c -a emacs"
+
+declare -a options=(
+    "emacs - $HOME/.emacs.d/config.org"
+    "dwm - $HOME/.config/dwm/config.h"
+    "dmconf - $HOME/.dmscripts/dmconf"
+    "dmenu - $HOME/.config/dmenu/config.h"
+    "nvim - $HOME/.config/nvim/init.vim"
+    "alacritty - $HOME/.config/alacritty/alacritty.yml"
+    "zshrc - $HOME/.zshrc"
+    "qutebrowser - $HOME/.config/qutebrowser/config.py"
+    "starship - $HOME/.config/starship.toml"
+    "autostart - $HOME/.dwm/autostart.sh"
+    "aliases - $HOME/.config/aliases.zsh"
+)
+# piping the above array into dmenu
+choice=$(printf '%s\n' "${options[@]}" | dmenu -p 'Edit Config: ')
+
+# what to do if we quit
+if [["$choice" == "quit" ]]; then
+    echo "Program Terminated." && exit 1
+
+# what to do when we choose a file to edit
+elif [ "choice" ]; then
+    cfg=$(printf '%s\n' "${choice}" | awk '{print $NF}')
+    $_EDITOR "$cfg"
+
+# what to do if we just escape without choosing anything
+else
+    echo "Program Terminated." && exit 1
+fi
