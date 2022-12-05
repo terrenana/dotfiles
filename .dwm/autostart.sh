@@ -1,3 +1,5 @@
 ~/.fehbg &
+/usr/bin/emacs --daemon &
 exec picom &
-slstatus
+slstatus &
+~/.local/bin/spotifyd --no-daemon 

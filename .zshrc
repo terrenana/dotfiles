@@ -19,3 +19,7 @@ fi
 
 # print a nice graphic
 pfetch
+
+# add .local/bin to path
+
+export PATH="$HOME/.local/bin/:$PATH"
