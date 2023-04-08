@@ -1,0 +1,1 @@
+/home/cruise/parinfer-rust/target/release/libparinfer_rust.rlib: /home/cruise/parinfer-rust/src/c_wrapper.rs /home/cruise/parinfer-rust/src/changes.rs /home/cruise/parinfer-rust/src/common_wrapper.rs /home/cruise/parinfer-rust/src/emacs_wrapper.rs /home/cruise/parinfer-rust/src/lib.rs /home/cruise/parinfer-rust/src/parinfer.rs /home/cruise/parinfer-rust/src/types.rs
