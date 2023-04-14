@@ -28,7 +28,6 @@
 ;; use spaces instead of tabs
 (setq-default indent-tabs-mode nil)
 
-;; TODO
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 (use-package general
  :config (general-evil-setup t))
@@ -43,22 +42,27 @@
  :states '(normal emacs)
  :keymaps 'rustic-mode-map
  :prefix "/")
+(general-create-definer defkey/python
+ :states '(normal emacs)
+ :keymaps 'python-mode-map
+ :prefix "/")
 
 ;; define functions we use later
- (defun open-config () (interactive)(find-file "~/.emacs.d/config.org"))
- (defun reload-config () (interactive)(load-file "~/.emacs.d/init.el"))
-;; autocomment lines
- (use-package evil-nerd-commenter)
- (use-package evil
-  :config (evil-mode 1))
- (defkey/default
-  "w" 'save-buffer
-  "f" 'find-file
-  "c" 'open-config
-  "r" 'reload-config
-  "q" 'evilnc-comment-or-uncomment-lines)
+(defun open-config () (interactive) (find-file "~/.emacs.d/config.org") (parinfer-rust-mode))
+(defun reload-config () (interactive)(load-file "~/.emacs.d/init.el"))
+ ;; autocomment lines
+(use-package evil-nerd-commenter)
+(use-package evil
+ :config (evil-mode 1))
+(defkey/default
+ "w" 'save-buffer
+ "f" 'find-file
+ "c" 'open-config
+ "r" 'reload-config
+ "q" 'evilnc-comment-or-uncomment-lines
+ "z" 'ibuffer)
 
- (evil-define-key 'insert 'global (kbd "C-v") 'yank)
+(evil-define-key 'insert 'global (kbd "C-v") 'yank)
 
 (use-package which-key
       :config (which-key-mode))
@@ -134,6 +138,17 @@
  :init
  (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
 
+(use-package company
+   :config
+   (setq company-idle-delay 0)
+   (setq company-minimum-prefix-length 1)
+   (setq company-selection-wrap-around t)
+   (company-tng-configure-default))
+
+
+  (add-hook 'after-init-hook 'global-company-mode)
+(evil-define-key 'insert company-active-map (kbd "<ret>") nil)
+
 (use-package ivy
  :config
  (ivy-mode))
@@ -145,7 +160,9 @@
 (use-package yafolding)
 (add-hook 'prog-mode-hook (lambda () (yafolding-mode)))
   ;; make yafolding work using <TAB> in all modes
-(evil-define-key normal global-map
+(evil-define-key 'normal global-map
+ (kbd "<tab>") #'yafolding-toggle-element)
+(evil-define-key 'insert org-mode-map
  (kbd "<tab>") #'yafolding-toggle-element)
 
 ;; org mode leader keys
@@ -157,21 +174,28 @@
  (setq rustic-format-on-save t)
  (add-hook 'rustic-mode-hook 'rust-lsp-mode))
 
-(defun rust-lsp-mode () (interactive)
+(defun rust-lsp-mode ()
  ;; called when in rust-mode
  ;; configures rust-specific LSP mode features
  (setq lsp-rust-analyzer-cargo-watch-command "clippy")
  (setq lsp-eldoc-render-all t)
  (setq lsp-idle-delay 0.6))
+(defkey/rust
+ "r" 'rustic-cargo-run)
+
+(add-hook 'python-mode-hook 'lsp-mode)
+(add-hook 'python-mode-hook 'python-lsp-mode)
+(defun python-lsp-mode ()
+ ;; called when editing a python file
+ ;; configures python-specific LSP mode features
+ (setq lsp-pyls-plugins-flake8-enabled t)
+ (add-to-list 'company-backends 'company-jedi))
+(defkey/python
+ "r" 'python-shell-send-buffer)
 
 (use-package lsp-mode
  :config
  (add-hook 'lsp-mode-hook 'lsp-ui-mode))
-
+   
 (use-package lsp-ui
  :ensure)
-
-(use-package company
-  :custom
-  (company-idle-delay nil))
-(add-hook 'after-init-hook 'global-company-mode)

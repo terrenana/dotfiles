@@ -7,7 +7,7 @@ Make startup lightning fast
   ;; default is 800 kb - measured in bytes
   (setq gc-cons-threshold (* 50 1000 1000))
 
-  (server-start)
+  ;;(server-start)
 
   ;; profile startup
   (add-hook 'emacs-startup-hook (lambda () (message "*** Emacs loaded in %s seconds with %d garbage collections." (emacs-init-time "%.2f") gcs-done)))
@@ -46,7 +46,6 @@ tab stuff
 
 Keybinds with =general.el=
 #+begin_src emacs-lisp
-                        ;; TODO
   (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
   (use-package general
    :config (general-evil-setup t))
@@ -61,15 +60,19 @@ Keybinds with =general.el=
    :states '(normal emacs)
    :keymaps 'rustic-mode-map
    :prefix "/")
+  (general-create-definer defkey/python
+   :states '(normal emacs)
+   :keymaps 'python-mode-map
+   :prefix "/")
 #+end_src
 
 
 =EVIL TIME=
 #+begin_src emacs-lisp
-         ;; define functions we use later
-  (defun open-config () (interactive)(find-file "~/.emacs.d/config.org"))
+           ;; define functions we use later
+  (defun open-config () (interactive) (find-file "~/.emacs.d/config.org") (parinfer-rust-mode))
   (defun reload-config () (interactive)(load-file "~/.emacs.d/init.el"))
- ;; autocomment lines
+   ;; autocomment lines
   (use-package evil-nerd-commenter)
   (use-package evil
    :config (evil-mode 1))
@@ -78,7 +81,8 @@ Keybinds with =general.el=
    "f" 'find-file
    "c" 'open-config
    "r" 'reload-config
-   "q" 'evilnc-comment-or-uncomment-lines)
+   "q" 'evilnc-comment-or-uncomment-lines
+   "z" 'ibuffer)
 
   (evil-define-key 'insert 'global (kbd "C-v") 'yank)
 
@@ -88,7 +92,6 @@ which-key keybind lookup
 #+begin_src emacs-lisp
   (use-package which-key
         :config (which-key-mode))
-      
 #+end_src
 
 clean up emacs UI
@@ -187,63 +190,86 @@ Rainbow Delimiters
 
 #+end_src
 
+company autocompletions
+#+begin_src emacs-lisp
+  (use-package company
+   :config
+   (setq company-idle-delay 0)
+   (setq company-minimum-prefix-length 1)
+   (setq company-selection-wrap-around t)
+   (company-tng-configure-default))
+
+
+  (add-hook 'after-init-hook 'global-company-mode)
+(evil-define-key 'insert company-active-map (kbd "<ret>") nil)
+#+end_src
+
 ivy, counsel, swiper
 #+begin_src emacs-lisp
-  (use-package ivy
-   :config
-   (ivy-mode))
-  (use-package counsel
-   :config
-   (counsel-mode))
-  (global-set-key "\C-s" 'swiper)
+(use-package ivy
+ :config
+ (ivy-mode))
+(use-package counsel
+ :config
+ (counsel-mode))
+(global-set-key "\C-s" 'swiper)
 #+end_src
 
 yafolding
 #+begin_src emacs-lisp
-  (use-package yafolding)
-  (add-hook 'prog-mode-hook (lambda () (yafolding-mode)))
-    ;; make yafolding work using <TAB> in all modes
-  (evil-define-key normal global-map
-   (kbd "<tab>") #'yafolding-toggle-element)
+(use-package yafolding)
+(add-hook 'prog-mode-hook (lambda () (yafolding-mode)))
+  ;; make yafolding work using <TAB> in all modes
+(evil-define-key 'normal global-map
+ (kbd "<tab>") #'yafolding-toggle-element)
+(evil-define-key 'insert org-mode-map
+ (kbd "<tab>") #'yafolding-toggle-element)
 #+end_src
 
 Org mode
 #+begin_src emacs-lisp
   ;; org mode leader keys
-  (defkey/org
-     "s" 'org-insert-structure-template)
+(defkey/org
+   "s" 'org-insert-structure-template)
 #+end_src
 
 Rust mode
 #+begin_src emacs-lisp
-  (use-package rustic
-   :config
-   (setq rustic-format-on-save t)
-   (add-hook 'rustic-mode-hook 'rust-lsp-mode))
+(use-package rustic
+ :config
+ (setq rustic-format-on-save t)
+ (add-hook 'rustic-mode-hook 'rust-lsp-mode))
 
-  (defun rust-lsp-mode () (interactive)
-   ;; called when in rust-mode
-   ;; configures rust-specific LSP mode features
-   (setq lsp-rust-analyzer-cargo-watch-command "clippy")
-   (setq lsp-eldoc-render-all t)
-   (setq lsp-idle-delay 0.6))
+(defun rust-lsp-mode ()
+ ;; called when in rust-mode
+ ;; configures rust-specific LSP mode features
+ (setq lsp-rust-analyzer-cargo-watch-command "clippy")
+ (setq lsp-eldoc-render-all t)
+ (setq lsp-idle-delay 0.6))
+(defkey/rust
+ "r" 'rustic-cargo-run)
+#+end_src
+
+Python Mode
+#+begin_src emacs-lisp
+(add-hook 'python-mode-hook 'lsp-mode)
+(add-hook 'python-mode-hook 'python-lsp-mode)
+(defun python-lsp-mode ()
+ ;; called when editing a python file
+ ;; configures python-specific LSP mode features
+ (setq lsp-pyls-plugins-flake8-enabled t)
+ (add-to-list 'company-backends 'company-jedi))
+(defkey/python
+ "r" 'python-shell-send-buffer)
 #+end_src
 
 lsp-mode
 #+begin_src emacs-lisp
-  (use-package lsp-mode
-   :config
-   (add-hook 'lsp-mode-hook 'lsp-ui-mode))
+(use-package lsp-mode
+ :config
+ (add-hook 'lsp-mode-hook 'lsp-ui-mode))
    
-  (use-package lsp-ui
-   :ensure)
+(use-package lsp-ui
+ :ensure)
 #+end_src
 
-company autocompletions
-#+begin_src emacs-lisp
-  (use-package company
-   :custom
-   (company-idle-delay nil))
- (add-hook 'after-init-hook 'global-company-mode)
-
-#+end_src
