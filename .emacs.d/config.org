@@ -64,6 +64,10 @@ Keybinds with =general.el=
    :states '(normal emacs)
    :keymaps 'python-mode-map
    :prefix "/")
+  (general-create-definer defkey/nim
+   :states '(normal emacs)
+   :keymaps 'nim-mode-map
+   :prefix "/")
 #+end_src
 
 
@@ -260,7 +264,16 @@ Python Mode
  (setq lsp-pyls-plugins-flake8-enabled t)
  (add-to-list 'company-backends 'company-jedi))
 (defkey/python
- "r" 'python-shell-send-buffer)
+ "r" nil) ;;TODO Make this execture python)
+#+end_src
+
+Nim Mode
+#+begin_src emacs-lisp
+  (use-package nim-mode
+   :config
+   (add-hook 'nim-mode-hook 'nimsuggest-mode))
+  (defkey/nim
+   "r" 'nim-compile)
 #+end_src
 
 lsp-mode

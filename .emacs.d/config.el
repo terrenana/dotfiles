@@ -1,7 +1,7 @@
 ;; default is 800 kb - measured in bytes
 (setq gc-cons-threshold (* 50 1000 1000))
 
-(server-start)
+;;(server-start)
 
 ;; profile startup
 (add-hook 'emacs-startup-hook (lambda () (message "*** Emacs loaded in %s seconds with %d garbage collections." (emacs-init-time "%.2f") gcs-done)))
@@ -45,6 +45,10 @@
 (general-create-definer defkey/python
  :states '(normal emacs)
  :keymaps 'python-mode-map
+ :prefix "/")
+(general-create-definer defkey/nim
+ :states '(normal emacs)
+ :keymaps 'nim-mode-map
  :prefix "/")
 
 ;; define functions we use later
@@ -191,7 +195,13 @@
  (setq lsp-pyls-plugins-flake8-enabled t)
  (add-to-list 'company-backends 'company-jedi))
 (defkey/python
- "r" 'python-shell-send-buffer)
+ "r" nil) ;;TODO Make this execture python)
+
+(use-package nim-mode
+ :config
+ (add-hook 'nim-mode-hook 'nimsuggest-mode))
+(defkey/nim
+ "r" 'nim-compile)
 
 (use-package lsp-mode
  :config
