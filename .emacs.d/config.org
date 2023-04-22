@@ -33,6 +33,9 @@ keep .emacs.d clean, as its source control tracked
 
   ;; use no-littering to set common junk files to be in the new user-emacs-directory
   (use-package no-littering)
+
+  ;; disable autosave
+  (setq auto-save-default nil)
 #+end_src
 
 tab stuff
@@ -59,7 +62,7 @@ Keybinds with =general.el=
   (general-create-definer defkey/rust
    :states '(normal emacs)
    :keymaps 'rustic-mode-map
-   :prefix "/")
+   :prefix "/r")
   (general-create-definer defkey/python
    :states '(normal emacs)
    :keymaps 'python-mode-map
@@ -69,7 +72,6 @@ Keybinds with =general.el=
    :keymaps 'nim-mode-map
    :prefix "/")
 #+end_src
-
 
 =EVIL TIME=
 #+begin_src emacs-lisp
@@ -200,12 +202,9 @@ company autocompletions
    :config
    (setq company-idle-delay 0)
    (setq company-minimum-prefix-length 1)
-   (setq company-selection-wrap-around t)
-   (company-tng-configure-default))
-
-
+   (setq company-selection-wrap-around t))
   (add-hook 'after-init-hook 'global-company-mode)
-(evil-define-key 'insert company-active-map (kbd "<ret>") nil)
+;; (evil-define-key 'insert company-active-map (kbd "<ret>") nil)
 #+end_src
 
 ivy, counsel, swiper
@@ -230,6 +229,14 @@ yafolding
  (kbd "<tab>") #'yafolding-toggle-element)
 #+end_src
 
+yasnippets
+#+begin_src emacs-lisp
+(use-package yasnippet
+ :config
+ (yas-global-mode 1))
+
+#+end_src
+
 Org mode
 #+begin_src emacs-lisp
   ;; org mode leader keys
@@ -251,7 +258,9 @@ Rust mode
  (setq lsp-eldoc-render-all t)
  (setq lsp-idle-delay 0.6))
 (defkey/rust
- "r" 'rustic-cargo-run)
+ "r" 'rustic-cargo-run
+ "c" 'rustic-cargo-clippy
+ "f" 'rustic-cargo-clippy-fix)
 #+end_src
 
 Python Mode
@@ -269,11 +278,11 @@ Python Mode
 
 Nim Mode
 #+begin_src emacs-lisp
-  (use-package nim-mode
-   :config
-   (add-hook 'nim-mode-hook 'nimsuggest-mode))
-  (defkey/nim
-   "r" 'nim-compile)
+(use-package nim-mode
+ :config
+ (add-hook 'nim-mode-hook 'nimsuggest-mode))
+(defkey/nim
+ "r" 'nim-compile)
 #+end_src
 
 lsp-mode

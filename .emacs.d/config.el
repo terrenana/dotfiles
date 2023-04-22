@@ -22,6 +22,9 @@
 ;; use no-littering to set common junk files to be in the new user-emacs-directory
 (use-package no-littering)
 
+;; disable autosave
+(setq auto-save-default nil)
+
 ;; tab width is 2
 (setq tab-width 2)
 (setq evil-shift-width tab-width)
@@ -41,7 +44,7 @@
 (general-create-definer defkey/rust
  :states '(normal emacs)
  :keymaps 'rustic-mode-map
- :prefix "/")
+ :prefix "/r")
 (general-create-definer defkey/python
  :states '(normal emacs)
  :keymaps 'python-mode-map
@@ -146,12 +149,9 @@
    :config
    (setq company-idle-delay 0)
    (setq company-minimum-prefix-length 1)
-   (setq company-selection-wrap-around t)
-   (company-tng-configure-default))
-
-
+   (setq company-selection-wrap-around t))
   (add-hook 'after-init-hook 'global-company-mode)
-(evil-define-key 'insert company-active-map (kbd "<ret>") nil)
+;; (evil-define-key 'insert company-active-map (kbd "<ret>") nil)
 
 (use-package ivy
  :config
@@ -169,6 +169,10 @@
 (evil-define-key 'insert org-mode-map
  (kbd "<tab>") #'yafolding-toggle-element)
 
+(use-package yasnippet
+ :config
+ (yas-global-mode 1))
+
 ;; org mode leader keys
 (defkey/org
    "s" 'org-insert-structure-template)
@@ -185,7 +189,9 @@
  (setq lsp-eldoc-render-all t)
  (setq lsp-idle-delay 0.6))
 (defkey/rust
- "r" 'rustic-cargo-run)
+ "r" 'rustic-cargo-run
+ "c" 'rustic-cargo-clippy
+ "f" 'rustic-cargo-clippy-fix)
 
 (add-hook 'python-mode-hook 'lsp-mode)
 (add-hook 'python-mode-hook 'python-lsp-mode)
