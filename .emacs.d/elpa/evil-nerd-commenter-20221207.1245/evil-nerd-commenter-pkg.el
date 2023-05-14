@@ -2,6 +2,8 @@
   '((emacs "26.1"))
   :commit "8c0f23d46a3927b9f83c1c2c4590be53d0b740db" :authors
   '(("Chen Bin" . "chenbin.sh@gmail.com"))
+  :maintainers
+  '(("Chen Bin" . "chenbin.sh@gmail.com"))
   :maintainer
   '("Chen Bin" . "chenbin.sh@gmail.com")
   :keywords

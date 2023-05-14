@@ -1,7 +1,7 @@
 ;; default is 800 kb - measured in bytes
 (setq gc-cons-threshold (* 50 1000 1000))
 
-;;(server-start)
+;; (server-start)
 
 ;; profile startup
 (add-hook 'emacs-startup-hook (lambda () (message "*** Emacs loaded in %s seconds with %d garbage collections." (emacs-init-time "%.2f") gcs-done)))
@@ -44,14 +44,6 @@
 (general-create-definer defkey/rust
  :states '(normal emacs)
  :keymaps 'rustic-mode-map
- :prefix "/r")
-(general-create-definer defkey/python
- :states '(normal emacs)
- :keymaps 'python-mode-map
- :prefix "/")
-(general-create-definer defkey/nim
- :states '(normal emacs)
- :keymaps 'nim-mode-map
  :prefix "/")
 
 ;; define functions we use later
@@ -67,7 +59,7 @@
  "c" 'open-config
  "r" 'reload-config
  "q" 'evilnc-comment-or-uncomment-lines
- "z" 'ibuffer)
+ "z" 'counsel-ibuffer)
 
 (evil-define-key 'insert 'global (kbd "C-v") 'yank)
 
@@ -93,35 +85,28 @@
         doom-themes-enable-italic t)
   (load-theme 'doom-wilmersdorf t))
 
-;; TODO
-
-; display minor mode menu on the modeline
-(use-package minions
-  :hook (doom-modeline-mode . minions-mode))
+(set-frame-font "LiterationMono Nerd Font Mono" nil t)
 
 ; use the doom-modeline
 (use-package doom-modeline
-  :after eshell
-  :hook (after-init . doom-modeline-init)
+  ;; :hook (after-init . doom-modeline-init)
   :custom-face
-  (mode-line ((t (:height 0.85))))
-  (mode-line-inactive ((t (:height 0.85))))
+  (mode-line ((t (:height 1.0))))
+  (mode-line-inactive ((t (:height 1.0))))
   :custom
-  (doom-modeline-height 15)
-  (doom-modeline-bar-width 6)
+  (doom-modeline-height 30)
+  (doom-modeline-bar-width 7)
+  (doom-modeline-support-imenu t)
   (doom-modeline-lsp t)
-  (doom-modeline-github nil)
-  (doom-modeline-mu4e nil)
-  (doom-modeline-irc nil)
-  (doom-modeline-minor-modes t)
-  (doom-modeline-persp-name nil)
-  (doom-modeline-buffer-file-name-style 'truncate-except-project)
-  (doom-modeline-major-mode-icon nil))
-:config
-(doom-modeline-mode)
-
-(use-package ws-butler
- :hook text-mode prog-mode)
+  (doom-modeline-buffer-file-name-style 'file-name)
+  (doom-modeline-icon nil)
+  (doom-modeline-major-mode-icon nil)
+  (doom-modeline-minor-modes nil)
+  (doom-modeline-buffer-encoding nil)
+  (doom-modeline-env-version t)
+  (doom-modeline-env-rust-executeable "rustc")
+  :config
+  (doom-modeline-mode))
 
 (use-package parinfer
  :disabled
@@ -136,7 +121,6 @@
    evil
    smart-tab
    smart-yank))
-(setq parinfer-rust-library (expand-file-name "~/.emacs.d/parinfer-rust/libparinfer_rust.so"))
 
 (defkey/default
  "tp" 'parinfer-rust-mode)
@@ -154,16 +138,16 @@
 ;; (evil-define-key 'insert company-active-map (kbd "<ret>") nil)
 
 (use-package ivy
- :config
- (ivy-mode))
+  :config
+  (ivy-mode))
 (use-package counsel
- :config
- (counsel-mode))
+  :config
+  (counsel-mode))
 (global-set-key "\C-s" 'swiper)
 
 (use-package yafolding)
 (add-hook 'prog-mode-hook (lambda () (yafolding-mode)))
-  ;; make yafolding work using <TAB> in all modes
+;; make yafolding work using <TAB> in all modes
 (evil-define-key 'normal global-map
  (kbd "<tab>") #'yafolding-toggle-element)
 (evil-define-key 'insert org-mode-map
@@ -180,38 +164,35 @@
 (use-package rustic
  :config
  (setq rustic-format-on-save t)
- (add-hook 'rustic-mode-hook 'rust-lsp-mode))
+ (add-hook 'rustic-mode-hook 'lsp-mode)
+ (add-hook 'rustic-mode-hook 'electric-pair-mode)
+ (add-hook 'rustic-mode-hook 'lsp-ui-sideline-mode)
+ :custom
+ (lsp-rust-analyzer-cargo-watch-command "clippy")
+ (lsp-eldoc-render-all t)
+ (lsp-idle-delay 0.5)
+ (lsp-ui-sideline-show-diagnostics t))
+ ;; (lsp-rust-analyzer-server-format-inlay-hints nil)
+ ;; (lsp-rust-analyzer-server-display-inlay-hints t)
+ ;; (lsp-rust-analyzer-display-parameter-hints t)
+ ;; (lsp-rust-analyzer-display-chaining-hints t))
 
-(defun rust-lsp-mode ()
- ;; called when in rust-mode
- ;; configures rust-specific LSP mode features
- (setq lsp-rust-analyzer-cargo-watch-command "clippy")
- (setq lsp-eldoc-render-all t)
- (setq lsp-idle-delay 0.6))
+
 (defkey/rust
  "r" 'rustic-cargo-run
  "c" 'rustic-cargo-clippy
- "f" 'rustic-cargo-clippy-fix)
-
-(add-hook 'python-mode-hook 'lsp-mode)
-(add-hook 'python-mode-hook 'python-lsp-mode)
-(defun python-lsp-mode ()
- ;; called when editing a python file
- ;; configures python-specific LSP mode features
- (setq lsp-pyls-plugins-flake8-enabled t)
- (add-to-list 'company-backends 'company-jedi))
-(defkey/python
- "r" nil) ;;TODO Make this execture python)
-
-(use-package nim-mode
- :config
- (add-hook 'nim-mode-hook 'nimsuggest-mode))
-(defkey/nim
- "r" 'nim-compile)
+ "g" 'rustic-cargo-clippy-fix
+ "a" 'lsp-execute-code-action)
 
 (use-package lsp-mode
  :config
- (add-hook 'lsp-mode-hook 'lsp-ui-mode))
-   
+ (add-hook 'lsp-mode-hook 'lsp-ui-mode)
+ :commands lsa)
+(add-to-list 'load-path (expand-file-name "lib/lsp-mode" user-emacs-directory))
+(add-to-list 'load-path (expand-file-name "lib/lsp-mode/clients" user-emacs-directory))
+
 (use-package lsp-ui
- :ensure)
+ :ensure
+ :custom
+ (lsp-ui-doc-enable t)
+ (lsp-ui-sideline-update-mode 'line))

@@ -3,6 +3,8 @@
     (cl-lib "0.5"))
   :commit "7ce8db297e3de258ec43802269438ac7f1918707" :authors
   '(("Fox Kiester" . "noct@posteo.net"))
+  :maintainers
+  '(("Fox Kiester" . "noct@posteo.net"))
   :maintainer
   '("Fox Kiester" . "noct@posteo.net")
   :keywords

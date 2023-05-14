@@ -3,9 +3,6 @@ HISTFILE=~/.zhistfile
 HISTSIZE=10000
 SAVEHIST=10000
 
-# init starship
-eval "$(starship init zsh)"
-
 # init zoxide
 eval "$(zoxide init zsh)"
 
@@ -16,8 +13,15 @@ source ~/.config/aliases.zsh
 pfetch
 
 # add .local/bin to path
-
 export PATH="$HOME/.local/bin/:$HOME/.cargo/bin:$PATH"
+
+# enable gentoo completions
+autoload -U compinit promptinit
+compinit
+promptinit; prompt gentoo
+
+# init starship
+eval "$(starship init zsh)"
 
 # startx if we are on tty1
 if [[ -z $DISPLAY ]] && [[ $(tty) = /dev/tty1 ]]; then 
