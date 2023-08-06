@@ -87,15 +87,15 @@ static const Layout layouts[] = {
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run", NULL};
 static const char *termcmd[]  = { "alacritty", NULL };
-static const char *emacscmd[] = { "emacsclient", "-c", "-a", "emacs", NULL};
-static const char *browsercmd[] = { "qutebrowser", NULL };
+static const char *editorcmd[] = { "alacritty", "-e", "nvim", NULL};
+static const char *browsercmd[] = { "firefox", NULL };
 static const char *dmconfcmd[] = {"/home/cruise/.dmscripts/dmconf", NULL};
 
 static const Key keys[] = {
 	/* modifier                     key        function        argument */
 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
-	{ MODKEY,                       XK_space,  spawn,          {.v = emacscmd} },
+	{ MODKEY,                       XK_space,  spawn,          {.v = editorcmd} },
 	{ MODKEY,                       XK_f,      spawn,          {.v = browsercmd } },
 	{ MODKEY,                       XK_c,      spawn,          {.v = dmconfcmd} },
 	{ MODKEY,                       XK_j,      focusstackvis,  {.i = +1 } },

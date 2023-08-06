@@ -2,7 +2,7 @@
 # code basically copied from DISTROTUBE
 # see "Solve Problems with Shell Scripting and dmenu" by DistroTube on YouTube
 
-_EDITOR="emacsclient -c -a emacs"
+_EDITOR="alacritty -e nvim"
 
 declare -a options=(
     "emacs - $HOME/.emacs.d/config.org"
