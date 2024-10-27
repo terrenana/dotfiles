@@ -1,0 +1,28 @@
+[font]
+size = 10.0
+
+[font.bold]
+family = "monospace"
+style = "Bold"
+
+[font.bold_italic]
+family = "monospace"
+style = "Bold Italic"
+
+[font.italic]
+family = "monospace"
+style = "Italic"
+
+[font.normal]
+family = "monospace"
+style = "Regular"
+
+[window]
+dynamic_title = true
+#history = 10000
+opacity = 0.9
+title = "alacritty"
+
+[window.class]
+general = "Alacritty"
+instance = "Alacritty"

@@ -5,12 +5,11 @@
 _EDITOR="alacritty -e nvim"
 
 declare -a options=(
-    "emacs - $HOME/.emacs.d/config.org"
     "dwm - $HOME/.config/dwm/config.h"
     "dmconf - $HOME/.dmscripts/dmconf"
     "dmenu - $HOME/.config/dmenu/config.h"
     "nvim - $HOME/.config/nvim/init.vim"
-    "alacritty - $HOME/.config/alacritty/alacritty.yml"
+    "alacritty - $HOME/.config/alacritty/alacritty.toml"
     "zshrc - $HOME/.zshrc"
     "qutebrowser - $HOME/.config/qutebrowser/config.py"
     "starship - $HOME/.config/starship.toml"

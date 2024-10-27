@@ -8,7 +8,7 @@ static const int swallowfloating    = 0;        /* 1 means swallow floating wind
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
 static const int user_bh            = 6;        /* 2 is the default spacing around the bar's font */
-static const char *fonts[]          = { "LiterationMono Nerd Font Mono:style=Book:size=10",
+static const char *fonts[]          = { "Liberation Mono:style=Regular:size=10",
                                           "FZHei-B01T,方正黑体繁体:style=Regular:size=11"  };
 static const char col_bg_desel[]       = "#222222"; 
 static const char col_bg_tag[]        = "#f4d47c";
