@@ -90,6 +90,7 @@ static const char *termcmd[]  = { "alacritty", NULL };
 static const char *editorcmd[] = { "alacritty", "-e", "nvim", NULL};
 static const char *browsercmd[] = { "firefox", NULL };
 static const char *dmconfcmd[] = {"/home/cruise/.dmscripts/dmconf", NULL};
+static const char *volumecmd[] = {"pavucontrol", NULL};
 
 static const Key keys[] = {
 	/* modifier                     key        function        argument */
@@ -98,6 +99,7 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_space,  spawn,          {.v = editorcmd} },
 	{ MODKEY,                       XK_f,      spawn,          {.v = browsercmd } },
 	{ MODKEY,                       XK_c,      spawn,          {.v = dmconfcmd} },
+	{ MODKEY,                       XK_v,      spawn,          {.v = volumecmd} },
 	{ MODKEY,                       XK_j,      focusstackvis,  {.i = +1 } },
 	{ MODKEY,                       XK_k,      focusstackvis,  {.i = -1 } },
 	{ MODKEY,                       XK_h,      setmfact,       {.f = -0.05} },

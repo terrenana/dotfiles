@@ -8,7 +8,7 @@ declare -a options=(
     "dwm - $HOME/.config/dwm/config.h"
     "dmconf - $HOME/.dmscripts/dmconf"
     "dmenu - $HOME/.config/dmenu/config.h"
-    "nvim - $HOME/.config/nvim/init.vim"
+    "nvim - $HOME/.config/nvim/init.lua"
     "alacritty - $HOME/.config/alacritty/alacritty.toml"
     "zshrc - $HOME/.zshrc"
     "qutebrowser - $HOME/.config/qutebrowser/config.py"
