@@ -39,12 +39,28 @@
 (set-fringe-mode 10)
 
 (set-frame-font "LiberationMono" nil t)
-(use-package unicode-fonts :ensure t :demand t
- :config
- (unicode-fonts-setup))
+(use-package nerd-icons :ensure t :demand t)
 
 (load-file (expand-file-name "~/.emacs.d/noctilux-theme.el"))
-(load-theme 'noctilux t)
+(if (daemonp)
+    (add-hook 'after-make-frame-functions
+              (lambda (frame)
+                (with-selected-frame frame
+                   (load-theme 'noctilux t))))
+  (load-theme 'noctilux t))
+
+(use-package doom-modeline :ensure t :demand t
+  :custom
+  (doom-modeline-height 30)
+  (doom-modeline-bar-width 7)
+  (doom-modeline-support-imenu t)
+  (doom-modeline-icon nil)
+  (doom-modeline-enable-word-count t)
+  (doom-modeline-buffer-encoding nil)
+ (doom-modeline-minor-modes t)
+ :config
+ (setq inhibit-compacting-font-caches t)
+ (doom-modeline-mode))
 
 (use-package evil :ensure t :demand t
   :config
@@ -54,18 +70,51 @@
 (use-package parinfer-rust-mode :ensure t :demand t
   :hook emacs-lisp-mode
   :config
-  (setq parinfer-rust-check-before-enable nil))
+  (setq parinfer-rust-check-before-enable nil)
+  (setq parinfer-rust-library (expand-file-name "~/.emacs.d/parinfer-rust/parinfer-rust-linux.so")))
 
 (setq-default indent-tabs-mode nil)
 
 (use-package rainbow-delimiters :ensure t :demand t
    :hook (emacs-lisp-mode . rainbow-delimiters-mode))
 
+(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+
+(use-package general :ensure t :demand t
+  :after evil
+  :config (general-evil-setup t)
+  (general-create-definer defkey/leader
+   :states '(normal emacs)
+   :prefix "/")
+ (defkey/leader
+  "s" 'save-buffer
+  "w" 'save-buffers-kill-emacs))
+
+(use-package ivy :ensure t :demand t
+  :config
+  (ivy-mode))
+
+(use-package counsel :ensure t :demand t
+  :config
+  (counsel-mode))
+
+(global-set-key "\C-s" 'swiper)
+
+(setq user-emacs-directory (expand-file-name "~/.cache/emacs/")
+      url-history-file (expand-file-name "url/history" user-emacs-directory))
+
+(use-package no-littering :ensure t :demand t)
+
+(setq auto-save-file-name-transforms
+      '((".*" "~/.cache/emacs/backup/" t)))
+
 (defun reload-config () (interactive)(load-file "~/.emacs.d/init.el"))
-(defun cl/tangle-config ()
-  (when (string-equal (buffer-file-name)
-                      (expand-file-name "~/.emacs.d/config.org"))
-    (let ((org-confirm-babel-evaluate nil))
-      (org-babel-tangle-file (buffer-file-name)))))
+ (defun cl/tangle-config () 
+   (when (string-equal (buffer-file-name)
+                       (expand-file-name "~/dotfiles/.emacs.d/config.org"))
+     (let ((org-confirm-babel-evaluate nil))
+       (org-babel-tangle-file "~/.emacs.d/config.org"))))
+  
+(advice-add #'cl/tangle-config :around #'polymode-with-current-base-buffer)
 
 (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'cl/tangle-config)))

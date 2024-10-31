@@ -2,7 +2,7 @@
 # code basically copied from DISTROTUBE
 # see "Solve Problems with Shell Scripting and dmenu" by DistroTube on YouTube
 
-_EDITOR="alacritty -e nvim"
+_EDITOR="emacsclient -c -a emacs"
 
 declare -a options=(
     "dwm - $HOME/.config/dwm/config.h"
