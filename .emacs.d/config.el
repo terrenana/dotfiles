@@ -88,7 +88,8 @@
    :prefix "/")
  (defkey/leader
   "s" 'save-buffer
-  "w" 'save-buffers-kill-emacs))
+  "w" 'save-buffers-kill-emacs
+  "f" 'find-file))
 
 (use-package ivy :ensure t :demand t
   :config

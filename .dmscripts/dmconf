@@ -15,6 +15,7 @@ declare -a options=(
     "starship - $HOME/.config/starship.toml"
     "autostart - $HOME/.dwm/autostart.sh"
     "aliases - $HOME/.config/aliases.zsh"
+    "emacs - $HOME/.emacs.d/config.org"
 )
 # piping the above array into dmenu
 choice=$(printf '%s\n' "${options[@]}" | dmenu -p 'Edit Config: ')
