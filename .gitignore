@@ -1,4 +1,6 @@
 .emacs.d/parinfer-rust
 .emacs.d/elpaca
-.config/*
-!.config/aliases.zsh
+.config/glib-*
+.config/gtk-*
+.config/procps
+.config/pulse
