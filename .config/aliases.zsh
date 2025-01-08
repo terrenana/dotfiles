@@ -1,6 +1,6 @@
 alias cd="z"
-alias ls="exa -l"
-alias la="exa -la"
+alias ls="eza -l"
+alias la="eza -la"
 alias cat="bat"
 alias grep="rg"
 alias emacs="devour emacsclient -c -a emacs"

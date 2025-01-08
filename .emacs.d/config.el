@@ -15,7 +15,7 @@
                 (org-level-7 . 1.1)
                 (org-level-8 . 1.1)))
   (set-face-attribute (car face) nil :font (case system-type
-                                             ('gnu/linux "LiberationMono")
+                                             ('gnu/linux "Liberation Mono")
                                              ('darwin "Liberation Mono"))
                       :weight 'regular :height (cdr face))))
 
@@ -43,7 +43,7 @@
 
 (set-frame-font (case system-type
                   ('darwin "Liberation Mono")
-                  ('gnu/linux "LiberationMono"))
+                  ('gnu/linux "Liberation Mono"))
                 nil t)
 (use-package nerd-icons :ensure t :demand t)
 
