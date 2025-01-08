@@ -118,7 +118,8 @@
 (use-package no-littering :ensure t :demand t)
 
 (setq auto-save-file-name-transforms
-      '((".*" "~/.cache/emacs/backup/" t)))
+       '((".*" "~/.cache/emacs/backup/" t)))
+(setq backup-directory-alist '((".*" "~/.cache/emacs/backup" t)))
 
 (defun reload-config () (interactive)(load-file "~/.emacs.d/init.el"))
  (defun cl/tangle-config () 
