@@ -14,7 +14,10 @@
                 (org-level-6 . 1.1)
                 (org-level-7 . 1.1)
                 (org-level-8 . 1.1)))
-  (set-face-attribute (car face) nil :font "LiberationMono" :weight 'regular :height (cdr face))))
+  (set-face-attribute (car face) nil :font (case system-type
+                                             ('gnu/linux "LiberationMono")
+                                             ('darwin "Liberation Mono"))
+                      :weight 'regular :height (cdr face))))
 
 (require 'org-tempo)
 (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
@@ -38,7 +41,10 @@
 (scroll-bar-mode -1)
 (set-fringe-mode 10)
 
-(set-frame-font "LiberationMono" nil t)
+(set-frame-font (case system-type
+                  ('darwin "Liberation Mono")
+                  ('gnu/linux "LiberationMono"))
+                      nil t)
 (use-package nerd-icons :ensure t :demand t)
 
 (load-file (expand-file-name "~/.emacs.d/noctilux-theme.el"))
@@ -71,7 +77,8 @@
   :hook emacs-lisp-mode
   :config
   (setq parinfer-rust-check-before-enable nil)
-  (setq parinfer-rust-library (expand-file-name "~/.emacs.d/parinfer-rust/parinfer-rust-linux.so")))
+
+   (setq parinfer-rust-library (expand-file-name "~/.emacs.d/parinfer-rust/parinfer-rust.so")))
 
 (setq-default indent-tabs-mode nil)
 
