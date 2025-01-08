@@ -170,6 +170,7 @@
 #+begin_src emacs-lisp
  (setq auto-save-file-name-transforms
        '((".*" "~/.cache/emacs/backup/" t)))
+(setq backup-directory-alist '((".*" "~/.cache/emacs/backup" t)))
 #+end_src
 * Functions
 ** Config tools
