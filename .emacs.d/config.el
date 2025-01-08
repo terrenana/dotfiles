@@ -44,7 +44,7 @@
 (set-frame-font (case system-type
                   ('darwin "Liberation Mono")
                   ('gnu/linux "LiberationMono"))
-                      nil t)
+                nil t)
 (use-package nerd-icons :ensure t :demand t)
 
 (load-file (expand-file-name "~/.emacs.d/noctilux-theme.el"))
@@ -78,7 +78,7 @@
   :config
   (setq parinfer-rust-check-before-enable nil)
 
-   (setq parinfer-rust-library (expand-file-name "~/.emacs.d/parinfer-rust/parinfer-rust.so")))
+  (setq parinfer-rust-library (expand-file-name "~/.emacs.d/parinfer-rust/parinfer-rust.so")))
 
 (setq-default indent-tabs-mode nil)
 
@@ -93,6 +93,10 @@
   (general-create-definer defkey/leader
    :states '(normal emacs)
    :prefix "/")
+  (general-create-definer defkey/haskell
+    :states '(normal emacs)
+    :keymaps 'haskell-mode-map
+    :prefix "/")
  (defkey/leader
   "s" 'save-buffer
   "w" 'save-buffers-kill-emacs
@@ -126,3 +130,8 @@
 (advice-add #'cl/tangle-config :around #'polymode-with-current-base-buffer)
 
 (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'cl/tangle-config)))
+
+(use-package haskell-mode :ensure t :demand t
+  :config
+  (defkey/haskell
+    "r" 'haskell-compile))

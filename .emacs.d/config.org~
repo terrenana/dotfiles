@@ -131,10 +131,6 @@
     (general-create-definer defkey/leader
      :states '(normal emacs)
      :prefix "/")
-    (general-create-definer defkey/haskell
-      :states '(normal emacs)
-      :keymaps 'haskell-mode-map
-      :prefix "/")
    (defkey/leader
     "s" 'save-buffer
     "w" 'save-buffers-kill-emacs
@@ -189,8 +185,5 @@
 * Languages
 ** Haskell
 #+begin_src emacs-lisp
-(use-package haskell-mode :ensure t :demand t
-  :config
-  (defkey/haskell
-    "r" 'haskell-compile))
+  (use-package haskell-mode)
 #+end_src
