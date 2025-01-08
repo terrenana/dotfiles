@@ -14,4 +14,3 @@ if [[ $(uname) == "Darwin" ]]; then
 elif command -v emerge > /dev/null; then
     alias ls="eza -l"
     alias la="eza -la"
-fi
