@@ -4,3 +4,5 @@
 .config/gtk-*
 .config/procps
 .config/pulse
+.DS_Store
+
