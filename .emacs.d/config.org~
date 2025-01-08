@@ -63,7 +63,7 @@
 #+end_src
 ** Font
 #+begin_src emacs-lisp
-  (set-frame-font (cl-case system-type
+  (set-frame-font (case system-type
                     ('darwin "Liberation Mono")
                     ('gnu/linux "LiberationMono"))
                   nil t)

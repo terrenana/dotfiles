@@ -34,6 +34,9 @@
 
 ;;; Code:
 
+(eval-when-compile
+  (require 'cl))
+
 (defconst noctilux-description
   "A Light Table inspired color theme based on Solarized's definitions.")
 
@@ -115,15 +118,15 @@ the \"Gen RGB\" column in noctilux-definitions.el to improve them further."
 
 (defun noctilux-color-definitions (mode)
   (noct-flet ((find-color (name)
-               (let* ((index (if window-system
-                                 (if noctilux-degrade
-                                     3
-                                   (if noctilux-broken-srgb 2 1))
-                               (cl-case (display-color-cells)
-                                 (16 4)
-                                 (8  5)
-                                 (otherwise 3)))))
-                 (nth index (assoc name noctilux-colors)))))
+           (let* ((index (if window-system
+                             (if noctilux-degrade
+                                 3
+                               (if noctilux-broken-srgb 2 1))
+                           (case (display-color-cells)
+                             (16 4)
+                             (8  5)
+                             (otherwise 3)))))
+             (nth index (assoc name noctilux-colors)))))
     (let ((base03      (find-color 'base03))
           (base02      (find-color 'base02))
           (base01      (find-color 'base01))
@@ -238,7 +241,7 @@ the \"Gen RGB\" column in noctilux-definitions.el to improve them further."
              (mode-line-inactive ; StatusLineNC
               ((t (,@fg-base01 ,@bg-base03 ,@fmt-bb :box nil))))
              (region ((t (,@fg-base01 ,@bg-base03 ,@fmt-revbb)))) ; Visual
-             (cl-secondary-selection ((t (,@bg-base02))))
+             (secondary-selection ((t (,@bg-base02))))
              (shadow ((t (,@fg-base01))))
              (trailing-whitespace ((t (,@fmt-revr ,@fg-red))))
              (vertical-border ((t (,@fg-base0))))
@@ -268,7 +271,7 @@ the \"Gen RGB\" column in noctilux-definitions.el to improve them further."
              (custom-state ((t (,@fg-green))))
              (custom-variable-tag ((t (,@fg-base1))))
              ;; diff - DiffAdd, DiffChange, DiffDelete, and DiffText
-             ,@(cl-case noctilux-diff-mode
+             ,@(case noctilux-diff-mode
                  (high
                   `((diff-added ((t (,@fmt-revr ,@fg-green))))
                     (diff-changed ((t (,@fmt-revr ,@fg-yellow))))
@@ -297,7 +300,7 @@ the \"Gen RGB\" column in noctilux-definitions.el to improve them further."
              ;; IDO
              (ido-only-match ((t (,@fg-green))))
              (ido-subdir ((t (,@fg-blue))))
-             (ido-cl-first-match ((t (,@fmt-bold ,@fg-green))))
+             (ido-first-match ((t (,@fmt-bold ,@fg-green))))
              ;; emacs-wiki
              (emacs-wiki-bad-link-face ((t (,@fmt-undr ,@fg-red))))
              (emacs-wiki-link-face ((t (,@fmt-undr ,@fg-blue))))
@@ -411,10 +414,10 @@ the \"Gen RGB\" column in noctilux-definitions.el to improve them further."
              (widget-single-line-field ((t (:inherit widget-field))))
              ;; extra modules
              ;; -------------
-        	     ;; bm visual bookmarks
-             (bm-fringe-face ((t (,@bg-orange ,@fg-base03))))
-             (bm-fringe-persistent-face ((t (,@bg-blue ,@fg-base03))))
-                     ;; Flymake
+	     ;; bm visual bookmarks
+	     (bm-fringe-face ((t (,@bg-orange ,@fg-base03))))
+	     (bm-fringe-persistent-face ((t (,@bg-blue ,@fg-base03))))
+             ;; Flymake
              (flymake-errline ((t (,@fmt-redwave)))) ; ErrorMsg
              (flymake-warnline ((t (,@fmt-orangewave)))) ; WarningMsg
              ;; column-marker
@@ -438,11 +441,11 @@ the \"Gen RGB\" column in noctilux-definitions.el to improve them further."
              (jabber-roster-user-offline ((t (,@fg-base01))))
              (jabber-roster-user-online ((t (,@fmt-bold ,@fg-blue))))
              (jabber-roster-user-xa ((t (,@fmt-ital ,@fg-magenta))))
-        	     ;; git-gutter
-             (git-gutter:modified ((t (,@fg-violet))))
-             (git-gutter:added ((t (,@fg-green))))
-             (git-gutter:deleted ((t (,@fg-red))))
-                     ;; gnus - these are taken from mutt, not VIM
+	     ;; git-gutter
+	     (git-gutter:modified ((t (,@fg-violet))))
+	     (git-gutter:added ((t (,@fg-green))))
+	     (git-gutter:deleted ((t (,@fg-red))))
+             ;; gnus - these are taken from mutt, not VIM
              (gnus-cite-1 ((t (,@fmt-none ,@fg-blue)))) ; quoted
              (gnus-cite-2 ((t (,@fmt-none ,@fg-cyan)))) ; quoted1
              (gnus-cite-3 ((t (,@fmt-none ,@fg-yellow)))) ; quoted2
@@ -648,29 +651,29 @@ the \"Gen RGB\" column in noctilux-definitions.el to improve them further."
              (company-preview-search ((t (,@fg-violet ,@bg-base01))))
              (company-echo ((t nil)))
              (company-echo-common ((t (,@fg-violet))))
-        	     ;;ansi-term
-             (term-color-black ((t ( ,@fg-base02))))
-             (term-color-red ((t ( ,@fg-red))))
-             (term-color-green ((t ( ,@fg-green))))
-             (term-color-yellow ((t ( ,@fg-yellow))))
-             (term-color-blue ((t ( ,@fg-blue))))
-             (term-color-magenta ((t ( ,@fg-magenta))))
-             (term-color-cyan ((t ( ,@fg-cyan))))
-             (term-color-white ((t ( ,@fg-base00)))))
+	     ;;ansi-term
+	     (term-color-black ((t ( ,@fg-base02))))
+	     (term-color-red ((t ( ,@fg-red))))
+	     (term-color-green ((t ( ,@fg-green))))
+	     (term-color-yellow ((t ( ,@fg-yellow))))
+	     (term-color-blue ((t ( ,@fg-blue))))
+	     (term-color-magenta ((t ( ,@fg-magenta))))
+	     (term-color-cyan ((t ( ,@fg-cyan))))
+	     (term-color-white ((t ( ,@fg-base00)))))
 
             ((foreground-color . ,(when (<= 16 (display-color-cells)) base0))
              (background-color . ,back)
              (background-mode . ,mode)
              (cursor-color . ,(when (<= 16 (display-color-cells))
                                 base0))
-             (ansi-color-names-vector . [,base02 ,red ,green ,yellow ,blue ,magenta ,cyan ,base00]))))))))
+	     (ansi-color-names-vector . [,base02 ,red ,green ,yellow ,blue ,magenta ,cyan ,base00]))))))))
 
 (defmacro create-noctilux-theme ()
   (let* ((theme-name 'noctilux)
          (defs (noctilux-color-definitions 'dark))
          (theme-vars (mapcar (lambda (def) (list (car def) (cdr def)))
-                             (cl-second defs)))
-         (theme-faces (cl-first defs)))
+                             (second defs)))
+         (theme-faces (first defs)))
     `(progn
        (deftheme ,theme-name ,noctilux-description)
        (apply 'custom-theme-set-variables ',theme-name ',theme-vars)
