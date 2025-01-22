@@ -27,3 +27,5 @@ eval "$(starship init zsh)"
 if [[ -z $DISPLAY ]] && [[ $(tty) = /dev/tty1 ]]; then 
   exec startx 
 fi
+
+[ -f "/Users/cruise/.ghcup/env" ] && . "/Users/cruise/.ghcup/env" # ghcup-env

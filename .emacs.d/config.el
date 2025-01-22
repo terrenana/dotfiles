@@ -105,12 +105,48 @@
  (defkey/leader
   "s" 'save-buffer
   "w" 'save-buffers-kill-emacs
-  "f" 'find-file))
+  "f" 'find-file
+  "g" 'magit
+  "b" 'switch-to-buffer))
 
 (setq package-install-upgrade-built-in t)
 (elpaca (transient :branch "main"))
-  (use-package magit :ensure t :demand t
-    :after transient)
+(use-package magit :ensure t :demand t
+  :after transient)
+
+(use-package flycheck :demand t :ensure t)
+
+(use-package lsp-mode
+  :ensure t
+  :demand t
+  :commands lsp
+  :custom
+  (lsp-eldoc-render-all t)
+  (lsp-idle-delay 0.6)
+  (lsp-inlay-hint-enable t)
+  (lsp-inlay-hint-enable t)
+  (lsp-headerline-breadcrumb-enable nil)
+  :config
+  (add-hook 'lsp-mode-hook 'lsp-ui-mode))
+
+(use-package lsp-ui
+  :ensure
+  :commands lsp-ui-mode
+  :custom
+  (lsp-ui-sideline-show-hover nil)
+  (lsp-ui-doc-show-with-moust t))
+
+(use-package company
+ :ensure t
+ :demand t)
+
+(use-package helm :ensure t :demand t)
+
+(use-package yasnippet :ensure t :demand t
+  :config
+  (yas-reload-all)
+  (add-hook 'prog-mode-hook 'yas-minor-mode)
+  (add-hook 'text-mode-hoom 'yas-minor-mode))
 
 (use-package ivy :ensure t :demand t
   :config
@@ -129,6 +165,11 @@
 
 (setf make-backup-files nil)
 (setf kill-buffer-delete-auto-save-files t)
+
+(when (string= system-type "darwin")       
+ (setq dired-use-ls-dired nil))
+
+(setq use-package-always-ensure t)
 
 (defun cl/tangle-config () 
   (when (string-equal (buffer-file-name)
@@ -151,7 +192,16 @@
     "r" #'cl/haskell-repl))
 
 (use-package rustic :ensure t :demand t
-  :config
+  :custom
   (setq rustic-format-trigger 'on-save)
+  (lsp-rust-analyzer-cargo-watch-command "clippy")
+  (lsp-rust-analyzer-display-lifetime-elision-hints-enable "skip_trivial")
+  (lsp-rust-analyzer-display-chaining-hints t)
+  (lsp-rust-analyzer-display-lifetime-elision-hints-use-parameter-names nil)
+  (lsp-rust-analyzer-display-closure-return-type-hints t)
+  (lsp-rust-analyzer-display-parameter-hints nil)
+  (lsp-rust-analyzer-display-reborrow-hints nil)
+  :config
   (defkey/rust
-    "r" 'rustic-compile))
+    "r" 'rustic-compile
+    "a" 'lsp-execute-code-action))
