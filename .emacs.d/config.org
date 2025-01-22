@@ -29,7 +29,8 @@
 ** Structure Templates
   #+begin_src emacs-lisp
   (require 'org-tempo)
-  (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+  (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp")
+               '("h" . "src haskell"))
   (use-package org-bullets :ensure t :demand t
     :after org
     :hook (org-mode . org-bullets-mode))
@@ -135,63 +136,89 @@
       :states '(normal emacs)
       :keymaps 'haskell-mode-map
       :prefix "/")
+    (general-create-definer defkey/rust
+      :states '(normal emacs)
+      :keymaps 'rustic-mode-map
+      :prefix "/")
    (defkey/leader
     "s" 'save-buffer
     "w" 'save-buffers-kill-emacs
     "f" 'find-file))
+ 
+#+end_src
+** Magit
+#+begin_src emacs-lisp
+  (setq package-install-upgrade-built-in t)
+(elpaca (transient :branch "main"))
+  (use-package magit :ensure t :demand t
+    :after transient)
 #+end_src
 * Emacs Tweaks
 ** Ivy
 #+begin_src emacs-lisp
- (use-package ivy :ensure t :demand t
-   :config
-   (ivy-mode))
+(use-package ivy :ensure t :demand t
+  :config
+  (ivy-mode))
 #+end_src
 ** Counsel
 #+begin_src emacs-lisp
- (use-package counsel :ensure t :demand t
-   :config
-   (counsel-mode))
+(use-package counsel :ensure t :demand t
+  :config
+  (counsel-mode))
 #+end_src
 ** Swiper
 #+begin_src emacs-lisp
- (global-set-key "\C-s" 'swiper)
+(global-set-key "\C-s" 'swiper)
 #+end_src
 ** Keep crap out of ~/.emacs.d
 #+begin_src emacs-lisp
- (setq user-emacs-directory (expand-file-name "~/.cache/emacs/")
-       url-history-file (expand-file-name "url/history" user-emacs-directory))
+(setq user-emacs-directory (expand-file-name "~/.cache/emacs/")
+      url-history-file (expand-file-name "url/history" user-emacs-directory))
 #+end_src
 ** no-littering
 #+begin_src emacs-lisp
- (use-package no-littering :ensure t :demand t)
+(use-package no-littering :ensure t :demand t)
 #+end_src
 ** Change location of autosave files
 #+begin_src emacs-lisp
- (setq auto-save-file-name-transforms
-       '((".*" "~/.cache/emacs/backup/" t)))
-(setq backup-directory-alist '((".*" "~/.cache/emacs/backup" t)))
+(setf make-backup-files nil)
+(setf kill-buffer-delete-auto-save-files t)
 #+end_src
 * Functions
 ** Config tools
 #+begin_src emacs-lisp
- (defun reload-config () (interactive)(load-file "~/.emacs.d/init.el"))
- (defun cl/tangle-config () 
-   (when (string-equal (buffer-file-name)
-                       (expand-file-name "~/dotfiles/.emacs.d/config.org"))
-     (let ((org-confirm-babel-evaluate nil))
-       (org-babel-tangle-file "~/.emacs.d/config.org"))))
+(defun cl/tangle-config () 
+  (when (string-equal (buffer-file-name)
+                      (expand-file-name "~/dotfiles/.emacs.d/config.org"))
+    (let ((org-confirm-babel-evaluate nil))
+      (org-babel-tangle-file "~/.emacs.d/config.org"))))
   
 (advice-add #'cl/tangle-config :around #'polymode-with-current-base-buffer)
 
 (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'cl/tangle-config)))
 #+end_src
+** Haskell repl
+#+begin_src emacs-lisp
+(defun cl/haskell-repl () (interactive)
+  (save-buffer)
+  (haskell-process-load-file)
+  (haskell-interactive-bring))
+#+end_src
 
-* Languages
+* Language
 ** Haskell
 #+begin_src emacs-lisp
 (use-package haskell-mode :ensure t :demand t
   :config
   (defkey/haskell
-    "r" 'haskell-compile))
+    "r" #'cl/haskell-repl))
+#+end_src
+
+** Rust
+#+begin_src emacs-lisp
+(use-package rustic :ensure t :demand t
+  :config
+  (setq rustic-format-trigger 'on-save)
+  (defkey/rust
+    "r" 'rustic-compile))
 #+end_src

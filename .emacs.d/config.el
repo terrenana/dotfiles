@@ -20,7 +20,8 @@
                       :weight 'regular :height (cdr face))))
 
 (require 'org-tempo)
-(add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+(add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp")
+             '("h" . "src haskell"))
 (use-package org-bullets :ensure t :demand t
   :after org
   :hook (org-mode . org-bullets-mode))
@@ -97,10 +98,19 @@
     :states '(normal emacs)
     :keymaps 'haskell-mode-map
     :prefix "/")
+  (general-create-definer defkey/rust
+    :states '(normal emacs)
+    :keymaps 'rustic-mode-map
+    :prefix "/")
  (defkey/leader
   "s" 'save-buffer
   "w" 'save-buffers-kill-emacs
   "f" 'find-file))
+
+(setq package-install-upgrade-built-in t)
+(elpaca (transient :branch "main"))
+  (use-package magit :ensure t :demand t
+    :after transient)
 
 (use-package ivy :ensure t :demand t
   :config
@@ -117,22 +127,31 @@
 
 (use-package no-littering :ensure t :demand t)
 
-(setq auto-save-file-name-transforms
-       '((".*" "~/.cache/emacs/backup/" t)))
-(setq backup-directory-alist '((".*" "~/.cache/emacs/backup" t)))
+(setf make-backup-files nil)
+(setf kill-buffer-delete-auto-save-files t)
 
-(defun reload-config () (interactive)(load-file "~/.emacs.d/init.el"))
- (defun cl/tangle-config () 
-   (when (string-equal (buffer-file-name)
-                       (expand-file-name "~/dotfiles/.emacs.d/config.org"))
-     (let ((org-confirm-babel-evaluate nil))
-       (org-babel-tangle-file "~/.emacs.d/config.org"))))
+(defun cl/tangle-config () 
+  (when (string-equal (buffer-file-name)
+                      (expand-file-name "~/dotfiles/.emacs.d/config.org"))
+    (let ((org-confirm-babel-evaluate nil))
+      (org-babel-tangle-file "~/.emacs.d/config.org"))))
   
 (advice-add #'cl/tangle-config :around #'polymode-with-current-base-buffer)
 
 (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'cl/tangle-config)))
 
+(defun cl/haskell-repl () (interactive)
+  (save-buffer)
+  (haskell-process-load-file)
+  (haskell-interactive-bring))
+
 (use-package haskell-mode :ensure t :demand t
   :config
   (defkey/haskell
-    "r" 'haskell-compile))
+    "r" #'cl/haskell-repl))
+
+(use-package rustic :ensure t :demand t
+  :config
+  (setq rustic-format-trigger 'on-save)
+  (defkey/rust
+    "r" 'rustic-compile))
